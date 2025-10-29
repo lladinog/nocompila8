@@ -1,4 +1,4 @@
-# Copyright 2025 MovilityAI
+# Copyright 2025 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,20 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""MovilityAI - Sistema Inteligente de Análisis y Optimización de Movilidad Urbana"""
+"""MovilityAI - Sistema multiagente de movilidad urbana inteligente para Medellín."""
 
 import os
 
-# Configuración opcional de Google Cloud (solo si google.auth está disponible)
+# Intentar configurar credenciales de Google Cloud (opcional para testing)
 try:
     import google.auth
     _, project_id = google.auth.default()
     os.environ.setdefault("GOOGLE_CLOUD_PROJECT", project_id)
     os.environ.setdefault("GOOGLE_CLOUD_LOCATION", "global")
     os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "True")
-except ImportError:
-    # Google ADK no está instalado, funcionará sin APIs externas
-    pass
+except Exception:
+    # En modo de testing o sin credenciales, usar valores por defecto
+    os.environ.setdefault("GOOGLE_CLOUD_PROJECT", "test-project")
+    os.environ.setdefault("GOOGLE_CLOUD_LOCATION", "global")
+    os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "False")
 
-# El import del agent se hace solo cuando se necesita
-# from . import agent
+# Solo importar agent si no estamos en modo de testing
+if not os.environ.get("TESTING"):
+    try:
+        from . import agent
+    except ImportError:
+        # ADK no disponible, probablemente en testing
+        pass

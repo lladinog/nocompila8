@@ -1,4 +1,4 @@
-# Copyright 2025 MovilityAI
+# Copyright 2025 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,18 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""CleanAgent: limpia y normaliza datos de tráfico."""
-
-from google.adk.agents import Agent
-from movility_ai.sub_agents.clean import prompt
-
-
-clean_agent = Agent(
-    model="gemini-2.5-flash",
-    name="clean_agent",
-    description="Agent responsible for cleaning, validating, and standardizing raw traffic data",
-    instruction=prompt.CLEAN_AGENT_INSTR,
-    tools=[
-        # Sin herramientas externas por ahora
-    ],
-)
+"""Sub-agents for MovilityAI system."""

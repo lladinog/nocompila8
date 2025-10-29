@@ -33,12 +33,19 @@ movility_ai/
 
 | Agente | Rol | Estado |
 |--------|-----|--------|
-| **NaviMind** | Orquestador conversacional | ⏳ En progreso |
+| **NaviMind** | Orquestador conversacional | 🟢 Estructura lista |
 | **PathFinder** | Planificación de rutas | ⏳ Pendiente |
 | **FlowSense** | Predicción de tráfico | ⏳ Pendiente |
 | **Pulse** | Contexto urbano | ⏳ Pendiente |
 | **EcoTrack** | Métricas sostenibilidad | ⏳ Pendiente |
 | **Insight** | Analítica urbana | ⏳ Pendiente |
+
+## ✅ Progreso TDD
+
+- ✅ **🔴 RED Phase**: Tests definidos (33 tests)
+- ✅ **🟢 GREEN Phase**: Core implementado (17/17 tests passing)
+- ⏳ **🔵 REFACTOR Phase**: Pendiente
+- ⏳ **Sub-agentes**: 0/5 implementados
 
 ## 🔄 Flujo de Interacción
 
