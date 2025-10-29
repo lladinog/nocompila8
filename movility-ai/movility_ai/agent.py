@@ -12,26 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""MovilityAI Root Agent - Sistema Inteligente de Análisis de Movilidad Urbana"""
+"""MovilityAI Root Agent - Sistema Inteligente de Movilidad Urbana para Medellín"""
 
 from google.adk.agents import Agent
 
 from movility_ai import prompt
-from movility_ai.sub_agents.ingest.agent import ingest_agent
-from movility_ai.sub_agents.clean.agent import clean_agent
-from movility_ai.sub_agents.analyze.agent import analyze_agent
-from movility_ai.sub_agents.report.agent import report_agent
+from movility_ai.sub_agents.pathfinder.agent import pathfinder_agent
+from movility_ai.sub_agents.flowsense.agent import flowsense_agent
+from movility_ai.sub_agents.insight.agent import insight_agent
 
 
 root_agent = Agent(
-    model="gemini-2.5-flash",
+    model="gemini-2.0-flash-exp",
     name="root_agent",
-    description="MovilityAI - Intelligent Urban Mobility Analysis System coordinating multiple specialized sub-agents",
+    description="MovilityAI - Sistema inteligente de movilidad urbana para Medellín que coordina agentes especializados en planificación de rutas, predicción de tráfico y análisis de datos urbanos",
     instruction=prompt.ROOT_AGENT_INSTR,
     sub_agents=[
-        ingest_agent,
-        clean_agent,
-        analyze_agent,
-        report_agent,
+        pathfinder_agent,
+        flowsense_agent,
+        insight_agent,
     ],
 )

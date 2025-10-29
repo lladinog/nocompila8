@@ -12,14 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""MovilityAI Sub-Agents - Agentes especializados para movilidad urbana"""
+"""FlowSense Agent - Predicción de congestión vial"""
 
-from movility_ai.sub_agents.pathfinder.agent import pathfinder_agent
-from movility_ai.sub_agents.flowsense.agent import flowsense_agent
-from movility_ai.sub_agents.insight.agent import insight_agent
+from .agent import flowsense_agent
 
-__all__ = [
-    "pathfinder_agent",
-    "flowsense_agent",
-    "insight_agent",
-]
+__all__ = ["flowsense_agent"]
