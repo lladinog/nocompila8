@@ -158,7 +158,7 @@ def calculate_eco_metrics(transport_mode: str, distance_km: float, tool_context)
 
 def generate_eco_dashboard(user_trips: int, tool_context) -> str:
     """
-    Genera dashboard personalizado de sostenibilidad
+    Genera dashboard personalizado de sostenibilidad con visualización
     
     Args:
         user_trips: Número de viajes realizados por el usuario
@@ -170,42 +170,59 @@ def generate_eco_dashboard(user_trips: int, tool_context) -> str:
     # Generar métricas mock acumuladas
     dashboard_data = generate_mock_eco_metrics(user_trips=user_trips)
     
-    # Generar visualización usando la herramienta de visualización
-    dashboard_json = viz_eco_dashboard(dashboard_data)
-    
-    # Agregar contexto adicional y celebración
     co2_saved = dashboard_data.get("co2_saved_kg", 0)
     calories = dashboard_data.get("calories_burned", 0)
     trees = dashboard_data.get("trees_equivalent", 0)
     eco_score = dashboard_data.get("eco_score", 0)
     
+    # Imagen ecológica inspiradora
+    eco_image = "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&q=80"
+    
     result_lines = [
-        "🎉 **TU DASHBOARD ECOLÓGICO** 🎉",
-        "━" * 50,
+        "## 🎉 Tu Dashboard Ecológico\n",
+        f"![Dashboard de Sostenibilidad]({eco_image})\n",
+        f"### 📊 Resumen de Impacto - {user_trips} viajes\n",
+        "| Métrica | Valor | Equivalencia |",
+        "|---------|-------|--------------|",
+        f"| 🌍 CO2 Ahorrado | {co2_saved:.2f} kg | vs. usar carro |",
+        f"| 🔥 Calorías | {calories:.0f} kcal | ~{calories//100} manzanas 🍎 |",
+        f"| 🌳 Árboles | {trees:.2f} | Equivalente anual |",
+        f"| ⭐ Eco Score | {eco_score}/100 | {'🟢 Excelente' if eco_score >= 80 else '🟡 Bueno'} |",
         "",
-        f"📊 **VIAJES REGISTRADOS:** {user_trips}",
-        "",
-        dashboard_json,
-        "",
-        "━" * 50,
-        "🏆 **LOGROS DESBLOQUEADOS:**"
+        "### 🏆 Logros Desbloqueados\n"
     ]
     
     # Agregar logros según progreso
+    achievements = []
     if co2_saved > 1:
-        result_lines.append("   ✅ **Guardián del Aire:** Ahorraste más de 1kg de CO2")
+        achievements.append("✅ **Guardián del Aire:** Ahorraste más de 1kg de CO2")
     if calories > 500:
-        result_lines.append("   ✅ **Atleta Urbano:** Quemaste más de 500 calorías")
+        achievements.append("✅ **Atleta Urbano:** Quemaste más de 500 calorías")
     if user_trips >= 10:
-        result_lines.append("   ✅ **Viajero Consciente:** Completaste 10 viajes ecológicos")
+        achievements.append("✅ **Viajero Consciente:** Completaste 10 viajes ecológicos")
     if eco_score >= 80:
-        result_lines.append("   ✅ **Héroe Verde:** Eco score superior a 80")
+        achievements.append("✅ **Héroe Verde:** Eco score superior a 80")
+    
+    if achievements:
+        result_lines.extend(achievements)
+    else:
+        result_lines.append("🎯 *¡Sigue viajando para desbloquear logros!*")
+    
+    # Barra de progreso visual
+    progress = min(100, (user_trips * 10))  # 10 viajes = 100%
+    progress_bar = "█" * (progress // 10) + "░" * (10 - (progress // 10))
     
     result_lines.extend([
         "",
-        "💡 **META PRÓXIMA:** 100 viajes ecológicos = 10kg CO2 ahorrados",
+        "### 📈 Progreso a la Meta",
+        f"```",
+        f"{progress_bar} {progress}%",
+        f"```",
+        f"💡 **Meta próxima:** {100 - user_trips} viajes más para alcanzar 100 viajes ecológicos",
         "",
-        "🌍 ¡Sigue así! Cada viaje sostenible mejora nuestra ciudad 💚"
+        "---",
+        "",
+        "🌍 *¡Cada viaje sostenible mejora nuestra ciudad!* 💚"
     ])
     
     return "\n".join(result_lines)

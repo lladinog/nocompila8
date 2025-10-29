@@ -32,7 +32,9 @@ except Exception:
 # Solo importar agent si no estamos en modo de testing
 if not os.environ.get("TESTING"):
     try:
-        from . import agent
+        from .agent import root_agent
+        # Exportar el agente para que ADK lo encuentre
+        __all__ = ["root_agent"]
     except ImportError:
         # ADK no disponible, probablemente en testing
         pass

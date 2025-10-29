@@ -85,14 +85,14 @@ def predict_traffic(zones: list[str], tool_context) -> str:
 
 def generate_traffic_heatmap(zones: list[str], tool_context) -> str:
     """
-    Genera un mapa de calor visual del estado del tráfico
+    Genera un mapa de calor visual del estado del tráfico con imagen
     
     Args:
         zones: Lista de zonas a incluir en el mapa
         tool_context: Contexto de la herramienta ADK
         
     Returns:
-        JSON formateado con el mapa de calor para visualización
+        Visualización con imagen del mapa de calor
     """
     # Verificar si hay una predicción guardada
     traffic_data = None
@@ -102,24 +102,37 @@ def generate_traffic_heatmap(zones: list[str], tool_context) -> str:
         # Generar nueva predicción si no existe
         traffic_data = generate_mock_traffic(zones)
     
-    # Generar visualización usando la herramienta de visualización
-    heatmap_json = viz_heatmap(traffic_data)
+    # Imagen de tráfico urbano desde Unsplash
+    traffic_image = "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&q=80"
     
-    # Agregar contexto adicional
+    # Generar visualización enriquecida
     result_lines = [
-        "🗺️ **MAPA DE CALOR DE TRÁFICO - MEDELLÍN**",
-        "━" * 50,
-        "",
-        heatmap_json,
-        "",
-        "━" * 50,
-        "📌 **LEYENDA:**",
-        "🟢 Bajo: Flujo normal (>40 km/h)",
-        "🟡 Medio: Tráfico moderado (25-40 km/h)",
-        "🟠 Alto: Congestión (10-25 km/h)",
-        "🔴 Crítico: Atasco severo (<10 km/h)",
-        "",
-        "💡 Actualizado en tiempo real"
+        "## 🗺️ Mapa de Calor de Tráfico - Medellín\n",
+        f"![Mapa de Calor del Tráfico]({traffic_image})\n",
+        "### 🚦 Estado del Tráfico por Zonas\n"
     ]
+    
+    # Agregar datos por zona en formato tabla
+    result_lines.append("| Zona | Estado | Velocidad | Nivel |")
+    result_lines.append("|------|--------|-----------|-------|")
+    
+    for zone_data in traffic_data:
+        zone = zone_data["zone"]
+        level = zone_data["level"]
+        speed = zone_data["average_speed_kmh"]
+        icon = _get_traffic_icon(level)
+        result_lines.append(f"| {zone} | {icon} {level.upper()} | {speed} km/h | {level} |")
+    
+    result_lines.extend([
+        "",
+        "### 📌 Leyenda de Colores",
+        "",
+        "- 🟢 **Bajo:** Flujo normal (>40 km/h)",
+        "- 🟡 **Medio:** Tráfico moderado (25-40 km/h)",
+        "- 🟠 **Alto:** Congestión (10-25 km/h)",
+        "- 🔴 **Crítico:** Atasco severo (<10 km/h)",
+        "",
+        "💡 *Actualizado en tiempo real*"
+    ])
     
     return "\n".join(result_lines)

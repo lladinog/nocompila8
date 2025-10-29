@@ -14,43 +14,17 @@
 
 """PathFinder Agent - Planificador de rutas multimodales para Medellín."""
 
-try:
-    from google.adk.agents import Agent
-    from google.adk.tools import tool
-    ADK_AVAILABLE = True
-except ImportError:
-    # Para testing sin ADK
-    ADK_AVAILABLE = False
-    Agent = None
-    def tool(*args, **kwargs):
-        def decorator(func):
-            return func
-        return decorator
+from google.adk.agents import Agent
 
 from movility_ai.sub_agents.pathfinder import prompt
 from movility_ai.sub_agents.pathfinder.tools import calculate_route, visualize_route
 
 
-# Convertir las funciones en ADK tools
-calculate_route_tool = tool(calculate_route) if ADK_AVAILABLE else calculate_route
-visualize_route_tool = tool(visualize_route) if ADK_AVAILABLE else visualize_route
-
-
 # Crear el agente PathFinder
-if ADK_AVAILABLE:
-    pathfinder_agent = Agent(
-        model="gemini-2.5-flash",
-        name="pathfinder_agent",
-        description="🗺️ Agente especializado en planificación de rutas multimodales para Medellín. Calcula rutas óptimas considerando metro, bus, bicicleta, y otros modos de transporte.",
-        instruction=prompt.PATHFINDER_AGENT_INSTR,
-        tools=[calculate_route_tool, visualize_route_tool],
-    )
-else:
-    # Mock para testing
-    class MockAgent:
-        name = "pathfinder_agent"
-        description = "🗺️ Agente especializado en planificación de rutas multimodales para Medellín."
-        instruction = prompt.PATHFINDER_AGENT_INSTR
-        tools = [calculate_route, visualize_route]
-    
-    pathfinder_agent = MockAgent()
+pathfinder_agent = Agent(
+    model="gemini-2.5-flash",
+    name="pathfinder_agent",
+    description="🗺️ Agente especializado en planificación de rutas multimodales para Medellín. Calcula rutas óptimas considerando metro, bus, bicicleta, y otros modos de transporte.",
+    instruction=prompt.PATHFINDER_AGENT_INSTR,
+    tools=[calculate_route, visualize_route],
+)

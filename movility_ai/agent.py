@@ -14,15 +14,7 @@
 
 """MovilityAI Root Agent - Sistema multiagente de movilidad urbana inteligente."""
 
-try:
-    from google.adk.agents import Agent
-    ADK_AVAILABLE = True
-except ImportError:
-    ADK_AVAILABLE = False
-    class Agent:
-        def __init__(self, **kwargs):
-            for key, value in kwargs.items():
-                setattr(self, key, value)
+from google.adk.agents import Agent
 
 from movility_ai import prompt
 from movility_ai.sub_agents.pathfinder.agent import pathfinder_agent
