@@ -21,7 +21,7 @@ from movility_ai.sub_agents.ingest.agent import ingest_agent
 from movility_ai.sub_agents.clean.agent import clean_agent
 from movility_ai.sub_agents.analyze.agent import analyze_agent
 from movility_ai.sub_agents.report.agent import report_agent
-
+from movility_ai.sub_agents.route_planner.agent import route_planner_agent
 
 root_agent = Agent(
     model="gemini-2.5-flash",
@@ -33,5 +33,6 @@ root_agent = Agent(
         clean_agent,
         analyze_agent,
         report_agent,
+        route_planner_agent,
     ],
 )
