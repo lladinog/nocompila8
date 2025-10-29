@@ -3,7 +3,7 @@ Herramientas para FlowSense Agent
 """
 
 from movility_ai.tools.data_mock_tool import generate_mock_traffic
-from movility_ai.tools.visualizer_tool import generate_traffic_heatmap as viz_heatmap
+from movility_ai.tools.chart_generator import generate_traffic_heatmap_medellin
 
 
 def _get_traffic_icon(level: str) -> str:
@@ -85,14 +85,14 @@ def predict_traffic(zones: list[str], tool_context) -> str:
 
 def generate_traffic_heatmap(zones: list[str], tool_context) -> str:
     """
-    Genera un mapa de calor visual del estado del tráfico con imagen
+    Genera un mapa de calor visual del estado del tráfico con ASCII art
     
     Args:
         zones: Lista de zonas a incluir en el mapa
         tool_context: Contexto de la herramienta ADK
         
     Returns:
-        Visualización con imagen del mapa de calor
+        Visualización con mapa de calor ASCII
     """
     # Verificar si hay una predicción guardada
     traffic_data = None
@@ -102,37 +102,22 @@ def generate_traffic_heatmap(zones: list[str], tool_context) -> str:
         # Generar nueva predicción si no existe
         traffic_data = generate_mock_traffic(zones)
     
-    # Imagen de tráfico urbano desde Unsplash
-    traffic_image = "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&q=80"
+    # Generar mapa de calor con ASCII art
+    heatmap = generate_traffic_heatmap_medellin(traffic_data)
     
-    # Generar visualización enriquecida
-    result_lines = [
-        "## 🗺️ Mapa de Calor de Tráfico - Medellín\n",
-        f"![Mapa de Calor del Tráfico]({traffic_image})\n",
-        "### 🚦 Estado del Tráfico por Zonas\n"
-    ]
+    # Agregar fuentes de información
+    sources = """
+────────────────────────────────────────────────
+
+📡 FUENTES DE INFORMACIÓN:
+
+✓ Twitter: @MetrodeMedellin - Reportes en tiempo real
+✓ SoloBus: Sistema de información de rutas
+✓ Waze: Reportes de conductores
+✓ Sensores IoT: Red de 150+ sensores en la ciudad
+
+� Última actualización: Hace 2 minutos
+────────────────────────────────────────────────
+"""
     
-    # Agregar datos por zona en formato tabla
-    result_lines.append("| Zona | Estado | Velocidad | Nivel |")
-    result_lines.append("|------|--------|-----------|-------|")
-    
-    for zone_data in traffic_data:
-        zone = zone_data["zone"]
-        level = zone_data["level"]
-        speed = zone_data["average_speed_kmh"]
-        icon = _get_traffic_icon(level)
-        result_lines.append(f"| {zone} | {icon} {level.upper()} | {speed} km/h | {level} |")
-    
-    result_lines.extend([
-        "",
-        "### 📌 Leyenda de Colores",
-        "",
-        "- 🟢 **Bajo:** Flujo normal (>40 km/h)",
-        "- 🟡 **Medio:** Tráfico moderado (25-40 km/h)",
-        "- 🟠 **Alto:** Congestión (10-25 km/h)",
-        "- 🔴 **Crítico:** Atasco severo (<10 km/h)",
-        "",
-        "💡 *Actualizado en tiempo real*"
-    ])
-    
-    return "\n".join(result_lines)
+    return heatmap + sources

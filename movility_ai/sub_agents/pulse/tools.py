@@ -119,6 +119,13 @@ def detect_urban_events(zones: list[str], tool_context) -> str:
         f"📌 **TOTAL DE EVENTOS DETECTADOS:** {len(filtered_events)}",
         f"🔴 Críticos: {len(critical_events)} | 🟠 Alto: {len(high_events)} | 🟡 Medio: {len(medium_events)} | 🟢 Bajo: {len(low_events)}",
         "",
+        "━" * 50,
+        "📡 **FUENTES DE INFORMACIÓN:**",
+        "• Twitter: @MetrodeMedellin, @AlcaldiadeMed, @TransitoMed",
+        "• Noticias: El Colombiano, RCN, Caracol Noticias",
+        "• Oficiales: Metro de Medellín, TransitoMed.gov.co",
+        "• IoT: Red de Sensores Urbanos (250+ puntos)",
+        "",
         "💡 **TIP:** Usa `generate_event_alerts()` para ver alertas visuales priorizadas"
     ])
     

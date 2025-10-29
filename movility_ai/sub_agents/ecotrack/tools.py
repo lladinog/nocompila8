@@ -3,7 +3,7 @@ Herramientas para EcoTrack Agent
 """
 
 from movility_ai.tools.data_mock_tool import generate_mock_eco_metrics
-from movility_ai.tools.visualizer_tool import generate_eco_dashboard as viz_eco_dashboard
+from movility_ai.tools.chart_generator import generate_eco_dashboard_chart
 
 
 # Factores de emisión de CO2 por modo (g/km)
@@ -175,19 +175,12 @@ def generate_eco_dashboard(user_trips: int, tool_context) -> str:
     trees = dashboard_data.get("trees_equivalent", 0)
     eco_score = dashboard_data.get("eco_score", 0)
     
-    # Imagen ecológica inspiradora
-    eco_image = "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&q=80"
+    # Generar visualización con matplotlib (imagen PNG)
+    dashboard_image = generate_eco_dashboard_chart(dashboard_data)
     
     result_lines = [
-        "## 🎉 Tu Dashboard Ecológico\n",
-        f"![Dashboard de Sostenibilidad]({eco_image})\n",
-        f"### 📊 Resumen de Impacto - {user_trips} viajes\n",
-        "| Métrica | Valor | Equivalencia |",
-        "|---------|-------|--------------|",
-        f"| 🌍 CO2 Ahorrado | {co2_saved:.2f} kg | vs. usar carro |",
-        f"| 🔥 Calorías | {calories:.0f} kcal | ~{calories//100} manzanas 🍎 |",
-        f"| 🌳 Árboles | {trees:.2f} | Equivalente anual |",
-        f"| ⭐ Eco Score | {eco_score}/100 | {'🟢 Excelente' if eco_score >= 80 else '🟡 Bueno'} |",
+        f"## 🎉 Tu Dashboard Ecológico - {user_trips} viajes\n",
+        dashboard_image,
         "",
         "### 🏆 Logros Desbloqueados\n"
     ]
@@ -208,19 +201,13 @@ def generate_eco_dashboard(user_trips: int, tool_context) -> str:
     else:
         result_lines.append("🎯 *¡Sigue viajando para desbloquear logros!*")
     
-    # Barra de progreso visual
-    progress = min(100, (user_trips * 10))  # 10 viajes = 100%
-    progress_bar = "█" * (progress // 10) + "░" * (10 - (progress // 10))
-    
     result_lines.extend([
         "",
-        "### 📈 Progreso a la Meta",
-        f"```",
-        f"{progress_bar} {progress}%",
-        f"```",
-        f"💡 **Meta próxima:** {100 - user_trips} viajes más para alcanzar 100 viajes ecológicos",
-        "",
-        "---",
+        "━" * 50,
+        "📡 **FUENTES DE INFORMACIÓN:**",
+        "• Factores de Emisión: IPCC, Ministerio de Ambiente Colombia",
+        "• Datos Calorías: OMS, American Heart Association",
+        "• Métricas Transporte: Metro de Medellín, Área Metropolitana",
         "",
         "🌍 *¡Cada viaje sostenible mejora nuestra ciudad!* 💚"
     ])

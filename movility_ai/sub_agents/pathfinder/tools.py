@@ -17,7 +17,8 @@ Tools para PathFinder Agent - Planificación de rutas multimodales.
 """
 
 from typing import Optional
-from movility_ai.tools import data_mock_tool, visualizer_tool
+from movility_ai.tools import data_mock_tool
+from movility_ai.tools.chart_generator import generate_route_map_ascii
 
 
 def calculate_route(
@@ -122,17 +123,23 @@ def visualize_route(
         f"{destination_encoded},+Medellín,+Colombia"
     )
     
-    # Imagen ilustrativa de Medellín desde Unsplash (ciudad, transporte)
-    # Usamos diferentes imágenes según el modo predominante
-    image_url = "https://images.unsplash.com/photo-1589981942335-c7f30747c0d4?w=800&q=80"  # Medellín ciudad
+    # Generar visualización ASCII del mapa con los segmentos de ruta
+    ascii_map = ""
+    if route_data and 'segments' in route_data:
+        ascii_map = generate_route_map_ascii(
+            origin=actual_origin,
+            destination=actual_destination,
+            segments=route_data['segments']
+        )
     
-    # Generar respuesta visual con imagen embebida
+    # Generar respuesta visual con mapa ASCII
     response = f"## 🗺️ Mapa Interactivo de Ruta\n\n"
     
-    # Imagen visual de Medellín
-    response += f"![Mapa de Ruta - {actual_origin} a {actual_destination}]({image_url})\n\n"
+    # Agregar mapa ASCII si existe
+    if ascii_map:
+        response += ascii_map + "\n\n"
     
-    response += f"### � Detalles de la Ruta\n\n"
+    response += f"### 📍 Detalles de la Ruta\n\n"
     response += f"- **Origen:** {actual_origin}\n"
     response += f"- **Destino:** {actual_destination}\n\n"
     

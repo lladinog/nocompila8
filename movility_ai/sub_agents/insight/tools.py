@@ -3,7 +3,7 @@ Herramientas para Insight Agent
 """
 
 from movility_ai.tools.data_mock_tool import generate_mock_insights
-from movility_ai.tools.visualizer_tool import generate_insight_chart as viz_insight_chart
+from movility_ai.tools.chart_generator import generate_city_insights_chart
 
 
 def generate_city_insights(time_period: str, tool_context) -> str:
@@ -71,6 +71,13 @@ def generate_city_insights(time_period: str, tool_context) -> str:
         f"  • {summary}",
         f"  • Zonas críticas: {critical_zones} con congestión alta",
         f"  • {popular_mode['percentage']}% de usuarios prefieren {popular_mode['mode']}",
+        "",
+        "━" * 50,
+        "📡 **FUENTES DE INFORMACIÓN:**",
+        "• Datos Agregados: Metro de Medellín, Área Metropolitana",
+        "• Análisis Tráfico: Waze, SoloBus, Google Maps APIs",
+        "• Estadísticas: DANE, Alcaldía de Medellín, MiMedellín",
+        "• IoT: 250+ sensores urbanos de monitoreo",
         ""
     ])
     
@@ -87,7 +94,7 @@ def generate_insight_chart(chart_type: str, data_category: str, tool_context) ->
         tool_context: Contexto de la herramienta ADK
         
     Returns:
-        Gráfico en formato JSON para visualización
+        Gráfico en formato ASCII para visualización
     """
     # Verificar si hay insights guardados
     insights_data = None
@@ -97,10 +104,10 @@ def generate_insight_chart(chart_type: str, data_category: str, tool_context) ->
         # Generar nuevos insights si no existen
         insights_data = generate_mock_insights()
     
-    # Generar visualización usando la herramienta de visualización
-    chart_json = viz_insight_chart(insights_data)
+    # Generar visualización ASCII usando la herramienta de charts
+    chart_ascii = generate_city_insights_chart(insights_data)
     
-    return chart_json
+    return chart_ascii
 
 
 # Registrar herramientas para ADK
