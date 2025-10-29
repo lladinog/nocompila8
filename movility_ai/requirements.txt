@@ -1,0 +1,13 @@
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.24.0
+
+# Google Agent Development Kit (ADK)
+google-genai>=0.8.0
+
+# Core dependencies
+pydantic>=2.0.0
+python-dotenv>=1.0.0
+
+# Optional for visualization
+matplotlib>=3.7.0

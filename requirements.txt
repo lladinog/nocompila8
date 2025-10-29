@@ -1,0 +1,13 @@
+# Testing
+pytest
+pytest-asyncio
+
+# Google Agent Development Kit (ADK)
+google-genai
+
+# Core dependencies
+pydantic
+python-dotenv
+pytest-asyncio
+google-genai
+google.adk
