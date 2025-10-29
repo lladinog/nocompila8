@@ -42,6 +42,4 @@ Output format:
 - Return cleaned data using TrafficData schema
 - Include data quality metrics in metadata
 - Document any transformations applied
-
-Current time: {_time}
 """

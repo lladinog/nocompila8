@@ -45,8 +45,6 @@ Output format:
 - Provide 3-5 actionable insights
 - Suggest 2-3 specific recommendations
 
-Current time: {_time}
-
 Congestion thresholds:
 - LOW: 0.0 - 0.4 (free flow)
 - MEDIUM: 0.4 - 0.7 (moderate delays)

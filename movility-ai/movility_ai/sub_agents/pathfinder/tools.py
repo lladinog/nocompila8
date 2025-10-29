@@ -190,7 +190,14 @@ def calculate_multimodal_route(
     weather = get_weather_conditions("Medellín")
     
     # Simular análisis de tráfico según hora
-    hour = datetime.now().hour if not current_time else datetime.fromisoformat(current_time).hour
+    if not current_time or current_time.lower() == 'now':
+        hour = datetime.now().hour
+    else:
+        try:
+            hour = datetime.fromisoformat(current_time).hour
+        except (ValueError, AttributeError):
+            hour = datetime.now().hour
+    
     traffic_factor = 1.5 if (7 <= hour <= 9) or (17 <= hour <= 19) else 1.0
     
     # Obtener rutas base de cada modo

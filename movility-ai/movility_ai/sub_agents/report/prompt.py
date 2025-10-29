@@ -63,6 +63,4 @@ Output format:
 - Bullet points for readability
 - Metrics highlighted
 - Time-stamped
-
-Current time: {_time}
 """

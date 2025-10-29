@@ -39,6 +39,4 @@ Current data sources configuration:
 <sources>
 {data_sources}
 </sources>
-
-Current time: {_time}
 """
