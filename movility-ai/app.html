@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 MovilityAI - Asistente de Movilidad Urbana</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .chat-container {
+            height: 500px;
+            overflow-y: auto;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message-bubble {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            line-height: 1.6;
+        }
+        
+        .message.user .message-bubble {
+            background: #667eea;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .message.bot .message-bubble {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Estilos para links en mensajes */
+        .message-bubble a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px solid #667eea;
+            transition: all 0.3s;
+        }
+        
+        .message-bubble a:hover {
+            color: #764ba2;
+            border-bottom-color: #764ba2;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        /* Estilos para listas */
+        .message-bubble ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .message-bubble li {
+            margin: 5px 0;
+        }
+        
+        /* Estilos para texto en negrita */
+        .message-bubble strong {
+            color: #667eea;
+        }
+        
+        /* Estilos para código inline */
+        .message-bubble code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        
+        /* Estilos para párrafos */
+        .message-bubble p {
+            margin: 8px 0;
+        }
+        
+        .message-bubble p:first-child {
+            margin-top: 0;
+        }
+        
+        .message-bubble p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            flex-shrink: 0;
+        }
+        
+        .message.user .avatar {
+            background: #764ba2;
+        }
+        
+        .message.bot .avatar {
+            background: #e9ecef;
+        }
+        
+        .input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+        }
+        
+        #userInput {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        #userInput:focus {
+            border-color: #667eea;
+        }
+        
+        #sendBtn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        #sendBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        #sendBtn:active {
+            transform: translateY(0);
+        }
+        
+        #sendBtn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading {
+            display: inline-block;
+        }
+        
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        
+        .suggestions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .suggestion-btn {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+        
+        .suggestion-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .error {
+            background: #fee;
+            border-left: 4px solid #f44;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .message-bubble {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 MovilityAI</h1>
+            <p>Asistente Inteligente de Movilidad Urbana para Medellín</p>
+            <div class="suggestions">
+                <button class="suggestion-btn" onclick="sendSuggestion('¿Cómo llego al Poblado?')">🚇 Rutas</button>
+                <button class="suggestion-btn" onclick="sendSuggestion('¿Cómo está el tráfico en la 80?')">🚦 Tráfico</button>
+                <button class="suggestion-btn" onclick="sendSuggestion('Ruta al aeropuerto')">✈️ Aeropuerto</button>
+                <button class="suggestion-btn" onclick="sendSuggestion('Opciones ecológicas')">🌱 Eco</button>
+            </div>
+        </div>
+        
+        <div class="chat-container" id="chatContainer">
+            <div class="message bot">
+                <div class="avatar">🤖</div>
+                <div class="message-bubble">
+                    <strong>¡Hola! Soy MovilityAI</strong> 👋<br><br>
+                    Puedo ayudarte con:<br>
+                    🚇 Planificación de rutas óptimas<br>
+                    🚦 Predicción de tráfico en tiempo real<br>
+                    📊 Análisis de movilidad urbana<br>
+                    🌱 Opciones de transporte ecológico<br><br>
+                    ¿En qué puedo ayudarte hoy?
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-container">
+            <input 
+                type="text" 
+                id="userInput" 
+                placeholder="Escribe tu pregunta sobre movilidad en Medellín..."
+                autocomplete="off"
+            >
+            <button id="sendBtn" onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        const API_URL = 'http://localhost:8083';  // URL del servidor ADK
+        
+        // Configurar marked para procesar Markdown
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+        });
+        
+        // Enter para enviar
+        document.getElementById('userInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        function sendSuggestion(text) {
+            document.getElementById('userInput').value = text;
+            sendMessage();
+        }
+        
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Agregar mensaje del usuario
+            addMessage(message, 'user');
+            
+            // Limpiar input y deshabilitar botón
+            input.value = '';
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Pensando...';
+            
+            // Agregar mensaje de carga
+            const loadingId = addMessage('Procesando tu consulta<span class="loading"></span>', 'bot', true);
+            
+            try {
+                // Llamar al servidor Flask
+                const response = await fetch(`${API_URL}/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        prompt: message,
+                        agent_name: 'root_agent'
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Remover mensaje de carga
+                document.getElementById(loadingId).remove();
+                
+                // Agregar respuesta del bot (procesando Markdown)
+                const botResponse = data.response || data.text || 'No pude generar una respuesta.';
+                addMessage(botResponse, 'bot');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById(loadingId).remove();
+                addMessage(`❌ Error conectando con el servidor: ${error.message}<br><br>Asegúrate de que el servidor esté corriendo en el puerto 8083.`, 'bot');
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Enviar';
+                input.focus();
+            }
+        }
+        
+        function addMessage(text, sender, isTemp = false) {
+            const container = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            const id = 'msg-' + Date.now();
+            
+            messageDiv.className = `message ${sender}`;
+            messageDiv.id = id;
+            
+            const avatar = sender === 'user' ? '👤' : '🤖';
+            
+            // Procesar Markdown solo para mensajes del bot
+            let processedText = text;
+            if (sender === 'bot' && !isTemp) {
+                processedText = marked.parse(text);
+            }
+            
+            messageDiv.innerHTML = `
+                <div class="avatar">${avatar}</div>
+                <div class="message-bubble">${processedText}</div>
+            `;
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+            
+            return isTemp ? id : null;
+        }
+        
+        // Foco en input al cargar
+        window.onload = () => {
+            document.getElementById('userInput').focus();
+        };
+    </script>
+</body>
+</html>
