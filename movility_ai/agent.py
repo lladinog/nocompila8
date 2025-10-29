@@ -26,9 +26,9 @@ except ImportError:
 
 from movility_ai import prompt
 from movility_ai.sub_agents.pathfinder.agent import pathfinder_agent
+from movility_ai.sub_agents.flowsense.agent import flowsense_agent
 
 # TODO: Import remaining sub-agents when created
-# from movility_ai.sub_agents.flowsense.agent import flowsense_agent
 # from movility_ai.sub_agents.pulse.agent import pulse_agent
 # from movility_ai.sub_agents.ecotrack.agent import ecotrack_agent
 # from movility_ai.sub_agents.insight.agent import insight_agent
@@ -41,7 +41,7 @@ root_agent = Agent(
     instruction=prompt.ROOT_AGENT_INSTR,
     sub_agents=[
         pathfinder_agent,
-        # flowsense_agent,
+        flowsense_agent,
         # pulse_agent,
         # ecotrack_agent,
         # insight_agent,

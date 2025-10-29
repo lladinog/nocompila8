@@ -66,3 +66,18 @@ def sample_user_profile():
         "eco_conscious": True,
         "favorite_zones": ["Laureles", "El Poblado"]
     }
+
+
+@pytest.fixture
+def mock_tool_context():
+    """Mock del contexto de herramientas ADK."""
+    class MockState:
+        """Mock del estado del contexto."""
+        pass
+    
+    class MockToolContext:
+        """Mock del contexto de herramientas."""
+        def __init__(self):
+            self.state = MockState()
+    
+    return MockToolContext()

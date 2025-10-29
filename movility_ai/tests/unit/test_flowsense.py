@@ -24,8 +24,8 @@ class TestFlowSenseAgent:
         
         assert len(flowsense_agent.tools) >= 2
         tool_names = [tool.__name__ for tool in flowsense_agent.tools]
-        assert "predict_traffic" in tool_names
-        assert "generate_traffic_heatmap" in tool_names
+        assert "predict_traffic_tool" in tool_names
+        assert "generate_traffic_heatmap_tool" in tool_names
     
     def test_flowsense_agent_has_instructions(self):
         """Verificar que FlowSense tiene instrucciones definidas"""
