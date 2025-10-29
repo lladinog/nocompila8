@@ -14,12 +14,20 @@
 
 """MovilityAI Root Agent - Sistema multiagente de movilidad urbana inteligente."""
 
-from google.adk.agents import Agent
+try:
+    from google.adk.agents import Agent
+    ADK_AVAILABLE = True
+except ImportError:
+    ADK_AVAILABLE = False
+    class Agent:
+        def __init__(self, **kwargs):
+            for key, value in kwargs.items():
+                setattr(self, key, value)
 
 from movility_ai import prompt
+from movility_ai.sub_agents.pathfinder.agent import pathfinder_agent
 
-# TODO: Import sub-agents when created
-# from movility_ai.sub_agents.pathfinder.agent import pathfinder_agent
+# TODO: Import remaining sub-agents when created
 # from movility_ai.sub_agents.flowsense.agent import flowsense_agent
 # from movility_ai.sub_agents.pulse.agent import pulse_agent
 # from movility_ai.sub_agents.ecotrack.agent import ecotrack_agent
@@ -32,7 +40,7 @@ root_agent = Agent(
     description="🧭 NaviMind - Asistente inteligente de movilidad urbana para Medellín",
     instruction=prompt.ROOT_AGENT_INSTR,
     sub_agents=[
-        # pathfinder_agent,
+        pathfinder_agent,
         # flowsense_agent,
         # pulse_agent,
         # ecotrack_agent,
