@@ -28,6 +28,16 @@ ENCICLA_STATIONS_MOCK = [
     {"id": 5, "name": "Estación Laureles", "lat": 6.2447, "lon": -75.5956, "bikes_available": 10, "docks_available": 10},
 ]
 
+# Tarifas del Metro de Medellín (2025)
+METRO_FARES = {
+    "tarifa_unica": 3150,  # COP - Tarifa única integrada (Metro + Metrocable + Tranvía + Buses integrados)
+    "tarifa_estudiante": 1700,  # COP - Tarifa reducida para estudiantes
+    "tarifa_adulto_mayor": 1575,  # COP - Tarifa reducida para adultos mayores
+    "tarjeta_civica": 2500,  # COP - Tarjeta Cívica (10 viajes)
+    "encicla": 0,  # COP - EnCicla es gratis (sistema de bicicletas públicas)
+    "integracion_bus": 3150,  # COP - Integración Metro + Bus (tarifa única)
+}
+
 METRO_LINES_MOCK = {
     "linea_a": ["Niquía", "Bello", "Madera", "Acevedo", "Tricentenario", "Caribe", "Universidad", "Hospital", "Prado", "Parque Berrío", "San Antonio", "Alpujarra", "Exposiciones", "Industriales", "Poblado", "Aguacatala", "Ayurá", "Envigado", "Itagüí", "Sabaneta", "La Estrella"],
     "linea_b": ["San Antonio", "Cisneros", "Parque Berrío"],
@@ -36,6 +46,7 @@ METRO_LINES_MOCK = {
     "metrocable_l": ["Santo Domingo", "El Tambo", "Carpinelo", "La Sierra"],
     "metrocable_h": ["Oriente", "Villa Sierra", "Cabañas", "Miraflores"],
     "metrocable_m": ["El Pinal", "La Montaña"],
+    "tranvia": ["San Antonio", "San José", "Pabellón del Agua", "Buenos Aires", "Miraflores", "Loyola", "Alejandro Echavarría", "Oriente"],
 }
 
 WEATHER_MOCK_DATA = {
@@ -96,13 +107,22 @@ def get_route_google_maps(origin: str, destination: str, mode: str = "driving") 
         "transit": {
             "duration": 40,
             "distance": 11.0,
-            "cost": 3050,  # Tarifa Metro Medellín 2025
+            "cost": METRO_FARES["tarifa_unica"],  # Tarifa única integrada Metro de Medellín
             "steps": [
                 {"instruction": "Camina a estación Universidad", "duration": 5, "distance": 0.4, "mode": "walking"},
                 {"instruction": "Toma Metro Línea A hacia La Estrella", "duration": 25, "distance": 9.5, "mode": "metro"},
                 {"instruction": "Baja en estación Poblado", "duration": 1, "distance": 0, "mode": "metro"},
                 {"instruction": "Camina al destino", "duration": 9, "distance": 1.1, "mode": "walking"},
-            ]
+            ],
+            "fare_info": {
+                "tipo": "Tarifa única integrada",
+                "valor": METRO_FARES["tarifa_unica"],
+                "incluye": "Metro + Metrocable + Tranvía + Buses integrados",
+                "descuentos": {
+                    "estudiantes": METRO_FARES["tarifa_estudiante"],
+                    "adulto_mayor": METRO_FARES["tarifa_adulto_mayor"],
+                }
+            }
         }
     }
     
@@ -232,6 +252,14 @@ def calculate_multimodal_route(
             "segments": transit["steps"],
             "total_duration": transit["duration"],
             "total_cost": transit["cost"],
+            "cost_breakdown": {
+                "tarifa": METRO_FARES["tarifa_unica"],
+                "descripcion": "Tarifa única integrada (Metro + Metrocable + Tranvía + Buses)",
+                "descuentos_disponibles": {
+                    "Estudiantes": f"${METRO_FARES['tarifa_estudiante']} COP",
+                    "Adultos mayores": f"${METRO_FARES['tarifa_adulto_mayor']} COP",
+                }
+            },
             "co2_kg": round(transit["distance"] * co2_per_km["transit"], 2),
             "score": calculate_route_score(transit["duration"], transit["cost"], transit["distance"] * co2_per_km["transit"], priority),
         })
@@ -250,6 +278,12 @@ def calculate_multimodal_route(
             ],
             "total_duration": multimodal_duration,
             "total_cost": multimodal_cost,
+            "cost_breakdown": {
+                "encicla": METRO_FARES["encicla"],
+                "metro": METRO_FARES["tarifa_unica"],
+                "total": multimodal_cost,
+                "nota": "EnCicla es GRATIS 🚲 - Solo pagas el Metro"
+            },
             "co2_kg": round(bicycling["distance"] * 0.3 * co2_per_km["bicycling"] + transit["distance"] * 0.7 * co2_per_km["transit"], 2),
             "score": calculate_route_score(multimodal_duration, multimodal_cost, 0, priority),
         })

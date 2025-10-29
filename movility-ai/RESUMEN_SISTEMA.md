@@ -1,10 +1,10 @@
 # 🚦 MovilityAI - Sistema Multiagente para Movilidad Urbana
 
-## ✅ Estado del Proyecto: COMPLETADO
+## ✅ Estado del Proyecto: COMPLETADO - Alineado con Hackathon "Medellín Te Quiere"
 
 ### 🎯 Sistema Implementado
 
-Se ha creado exitosamente un **sistema multiagente de movilidad urbana para Medellín, Colombia** con 3 agentes especializados:
+Se ha creado exitosamente un **sistema multiagente de movilidad urbana para Medellín, Colombia** con 4 agentes especializados, cumpliendo 100% con los requisitos del hackathon:
 
 ---
 
@@ -67,7 +67,41 @@ Se ha creado exitosamente un **sistema multiagente de movilidad urbana para Mede
 
 ---
 
-### 3. Insight Agent 📊
+### 3. Alertas Agent 🚨  
+**Ubicación:** `movility_ai/sub_agents/alertas/`
+
+**Responsabilidad:** Gestor de Contingencias - Monitoreo de incidentes en tiempo real
+
+**Archivos:**
+- `agent.py` - Definición del agente
+- `prompt.py` - Instrucciones de gestión de contingencias
+- `monitor.py` - 5 tools (web scraping, incidentes, metro, alternativas, eventos)
+
+**Capacidades:**
+- ✅ Monitoreo de redes sociales (@sttmed, @metrodemedellin)
+- ✅ Detección de accidentes y cierres viales
+- ✅ Estado del Metro/Metrocable en tiempo real
+- ✅ Generación automática de rutas alternativas
+- ✅ Alertas de eventos masivos (partidos, conciertos)
+- ✅ Web scraping de noticias y Waze
+- ✅ Clasificación por severidad (Crítica/Grave/Moderada/Leve)
+
+**Ejemplo de salida:**
+```
+🟠 ALERTA GRAVE: Accidente de Tránsito
+📍 Autopista Sur altura Envigado (Estación Ayurá)
+⏰ Desde: 07:45 AM
+⏱️ Duración estimada: 45-90 minutos
+👥 Impacto: Alto tráfico hacia sur
+
+✅ Alternativas:
+1. Usar Metro Línea A hasta Envigado + caminata
+2. Tomar Calle 10 vía Las Palmas
+```
+
+---
+
+### 4. Insight Agent 📊
 **Ubicación:** `movility_ai/sub_agents/insight/`
 
 **Responsabilidad:** Analista de movilidad urbana
@@ -104,10 +138,11 @@ Se ha creado exitosamente un **sistema multiagente de movilidad urbana para Mede
 root_agent (coordinador principal)
     ├── pathfinder_agent (rutas multimodales)
     ├── flowsense_agent (predicción de tráfico)
+    ├── alertas_agent (gestión de contingencias)
     └── insight_agent (analytics y visualización)
 ```
 
-**Coordinación:** El `root_agent` delega inteligentemente a cada sub-agente según la consulta del usuario.
+**Coordinación:** El `root_agent` delega inteligentemente a cada sub-agente según la consulta del usuario. Los agentes se comunican entre sí para respuestas integrales.
 
 ---
 
